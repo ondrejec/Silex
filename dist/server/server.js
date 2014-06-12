@@ -95,6 +95,11 @@ options.staticFolders.push(
     {
         name: '/silex',
         path: __dirname + '/../../dist/client'
+    },
+    // cloud explorer
+    {
+        name: '/cloud-explorer',
+        path: __dirname + '/../../submodules/cloud-explorer/bin/web'
     }
 );
 

@@ -34,49 +34,68 @@ module.exports = function(grunt) {
   if (!grunt.file.exists('node_modules/grunt-contrib-watch')) {
     production = true;
   }
+
+  // when debug mode, allows debug tastks like source maps, test tools...
+  if (!production){
+    grunt.loadNpmTasks('grunt-selenium-webdriver');
+    grunt.loadNpmTasks('grunt-contrib-csslint');
+    grunt.loadNpmTasks('grunt-append-sourcemapping');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-closure-linter');
+    grunt.loadNpmTasks('grunt-simple-mocha');
+    grunt.task.renameTask('watch', 'doWatch')
+  }
+
+  // build tasks
   grunt.loadNpmTasks('grunt-closure-tools');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-jade');
 
-  if (!production){
-      grunt.loadNpmTasks('grunt-selenium-webdriver');
-      grunt.loadNpmTasks('grunt-contrib-csslint');
-      grunt.loadNpmTasks('grunt-append-sourcemapping');
-      grunt.loadNpmTasks('grunt-contrib-watch');
-      grunt.loadNpmTasks('grunt-closure-linter');
-      grunt.loadNpmTasks('grunt-simple-mocha');
-      grunt.task.renameTask('watch', 'doWatch')
-  }
-
-
+  // deploy tasks
   grunt.registerTask('heroku', ['releaseDeploy']);
   grunt.registerTask('deploy', ['releaseDeploy']);
-  grunt.registerTask('releaseDeploy', ['concat', 'less:production', 'jade:release', 'closureBuilder:release']);
-  grunt.registerTask('debugDeploy', ['concat', 'less:development', 'jade:debug', 'closureBuilder:debug', 'append-sourcemapping']);
+  grunt.registerTask('releaseDeploy', ['concat', 'less:production', 'jade:release', 'closureBuilder:release', 'cloudExplorerBuild']);
+  grunt.registerTask('debugDeploy', ['concat', 'less:development', 'jade:debug', 'closureBuilder:debug', 'append-sourcemapping', 'cloudExplorerBuild']);
+
+  // test and check tasks
   grunt.registerTask('check', ['htmllint', 'csslint:lax', 'closureLint']);
   grunt.registerTask('test', ['releaseDeploy', 'selenium_start', 'simplemocha', 'selenium_stop']);
   grunt.registerTask('fix', ['closureFixStyle']);
 
   grunt.registerTask('default', ['deploy']);
 
+  // watch for file modifications and then build Silex and restart Silex server
   grunt.registerTask('watch', 'Start Silex', function () {
+    console.log('watch for file modifications and then build Silex and restart Silex server');
     grunt.task.run([
-        'runDebug',
-        'doWatch:main'
+      'runDebug',
+      'doWatch:main'
     ]);
   });
+  // run build Cloud Explorer
+  grunt.registerTask('cloudExplorerBuild', 'Run haxe and build Cloud Explorer', function (done) {
+    // var buildCommand = 'node node_modules/haxe/bin/haxe-cli.js -js submodules/cloud-explorer/app/scripts/cloud-explorer.js -cp submodules/cloud-explorer/src ce.api.CloudExplorer';
+    var buildCommand = 'cd submodules/cloud-explorer/; npm install; grunt npmHaxeBuild';
+    console.log('Run build Cloud Explorer');
+    console.log('Executing', buildCommand);
+    var execSync = require('exec-sync');
+    var user = execSync(buildCommand);
+  });
+  // Start Silex server
   grunt.registerTask('run', 'Start Silex', function () {
-      var server = require('./dist/server/server.js');
-      console.log('Start Silex', server);
+    console.log('Start Silex server');
+    var server = require('./dist/server/server.js');
   });
+  // Start Silex server in debug mode
   grunt.registerTask('runDebug', 'Start Silex', function () {
-      var server = require('./dist/server/server.js');
-      server.setDebugMode(true);
-      console.log('Start Silex in debug mode', server);
+    var server = require('./dist/server/server.js');
+    server.setDebugMode(true);
+    console.log('Start Silex server in debug mode', server);
   });
-
+  // Install Silex git hooks
   grunt.registerTask('install', function() {
+    console.log('Install Silex git hooks');
     try{
       var fs = require('fs');
       grunt.file.copy('build/pre-commit', '.git/hooks/pre-commit');
@@ -87,7 +106,6 @@ module.exports = function(grunt) {
       console.log('not able to add precommit hook.');
     }
   });
-
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json')
