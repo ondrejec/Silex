@@ -76,12 +76,16 @@ module.exports = function(grunt) {
   // run build Cloud Explorer
   grunt.registerTask('cloudExplorerBuild', 'Run haxe and build Cloud Explorer', function (done) {
     // var buildCommand = 'node node_modules/haxe/bin/haxe-cli.js -js submodules/cloud-explorer/app/scripts/cloud-explorer.js -cp submodules/cloud-explorer/src ce.api.CloudExplorer';
-    var buildCommand = 'cd submodules/cloud-explorer/; npm install; grunt npmHaxeBuild';
+    var buildCommand = 'cd submodules/cloud-explorer/; npm install; node_modules/grunt-cli/bin/grunt npmHaxeBuild';
     console.log('Run build Cloud Explorer');
     console.log('Run build Cloud Explorer - Executing', buildCommand);
     var sh = require('execSync');
     var code = sh.run(buildCommand);
     console.log('Run build Cloud Explorer - return code ' + code);
+    if (code !== 0){
+      console.log('ERROR: Cloud Explorer build failed with code', code);
+      //throw new Error('Cloud Explorer build failed');
+    }
   });
   // Start Silex server
   grunt.registerTask('run', 'Start Silex', function () {
