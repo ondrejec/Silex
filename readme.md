@@ -46,6 +46,39 @@ This is for developers only, since our beloved designers can use the [online ver
 
 Developers you can clone this repository and start Silex, with nodejs. See instructions bellow.
 
+### local installation with docker
+
+This is the most simple way to install Silex locally. It requires only [Docker](https://docs.docker.com/).
+
+Retrieve the image with 
+
+```sh
+$ docker pull silex-docker
+$ sudo docker run -p 6805:6805 --name "silex-docker" -d lexoyo/silex-docker
+```
+
+Then start Silex with
+
+```sh
+$ sudo docker start silex-docker
+```
+
+And open `http://0.0.0.0:6805/` in a browser.
+
+You can stop Silex with
+
+```sh
+$ sudo docker stop silex-docker
+```
+
+Note: you can build the docker image like this:
+
+```sh
+$ git clone --recursive https://github.com/silexlabs/Silex.git
+$ sudo docker build -t silex-docker .
+$ sudo docker run -p 6805:6805 --name "silex-docker" -d silex-docker
+```
+
 ### local installation on linux or macos
 
 Prerequisite :
