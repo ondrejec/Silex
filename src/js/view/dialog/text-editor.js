@@ -198,6 +198,17 @@ silex.view.dialog.TextEditor.prototype.buildUi = function() {
       /** @type  {!Element} */ (goog.dom.getElementByClass(
           'toolbar', this.element)));
 
+  // show raw HTML
+  var rawHtmlBtn = goog.ui.editor.ToolbarFactory.makeButton(
+      'rawHtml', 'Show raw HTML', 'HTML');
+  goog.events.listen(
+      rawHtmlBtn,
+      goog.ui.Component.EventType.ACTION,
+      this.onRawHtmlClick,
+      false,
+      this);
+  myToolbar.addChild(rawHtmlBtn, true);
+
   // lorem ipsum button
   var button = goog.ui.editor.ToolbarFactory.makeButton(
       'loremIpsumBtn', 'insert lorem ipsum text', 'Lorem');
@@ -434,6 +445,25 @@ silex.view.dialog.TextEditor.prototype.setCustomCssStyles =
 
   // add the styles to the editor's dom
   silexStyle.innerHTML = customCssStyles;
+};
+
+
+silex.view.dialog.TextEditor.prototype.onRawHtmlClick = function(e) {
+  console.log(this.textField, this.textField.getCleanContents());
+  var iframe = goog.dom.getElementsByTagNameAndClass(
+      'iframe', null, this.element)[0];
+  if (!goog.isDefAndNotNull(this.textArea)){
+    this.textArea = goog.dom.createElement('textarea');
+    goog.dom.classlist.add(this.textArea, 'text-field');
+    goog.dom.insertSiblingBefore(this.textArea, iframe);
+    iframe.style.display = 'none';
+    this.textArea.value = this.textField.getCleanContents();
+  }
+  else {
+    goog.dom.removeNode(this.textArea);
+    this.textArea = null;
+    iframe.style.display = '';
+  }
 };
 
 
