@@ -102,6 +102,9 @@
   }
   fieldset {
     margin-bottom: 10px;
+    max-width: 250px;
+    float: left;
+    width: 100%;
   }
   .position-editor {
     label {
@@ -111,6 +114,12 @@
       text-align: right;
       color: #555555;
       font-size: 11px;
+    }
+    .two-col label,
+    .two-col input {
+      width: 42%;
+      margin: 5px;
+      text-align: left;
     }
     .right-bottom {
       width: 25px;
@@ -161,7 +170,8 @@
   }
   .main-container {
     padding: 5px;
-    width: 97%;
+    right: 25px;
+    left: 5px;
   }
   .goog-tab-bar {
     background-color: transparent;
