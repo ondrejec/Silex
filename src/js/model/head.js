@@ -136,7 +136,7 @@ silex.model.Head.prototype.extractUserHeadTag = function(headString) {
     headString = headString.replace(regExp, '');
     this.userHeadTag = found[1];
   }
-  else {
+  else  {
     this.userHeadTag = '';
   }
   return headString;
