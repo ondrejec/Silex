@@ -363,6 +363,7 @@ silex.model.Head.prototype.getDescription = function() {
 
 /**
  * website title
+ * @return {string}
  */
 silex.model.Head.prototype.getTitle = function() {
   var titleNode = this.getHeadElement().querySelector('title');
@@ -370,13 +371,14 @@ silex.model.Head.prototype.getTitle = function() {
     return titleNode.innerHTML;
   }
   else {
-    return null;
+    return '';
   }
 };
 
 
 /**
  * website title
+ * @param {string} name
  */
 silex.model.Head.prototype.setTitle = function(name) {
   // find or create the title tag in the head section
