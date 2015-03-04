@@ -60,11 +60,19 @@ silex.model.Body.SILEX_TYPE_CONTAINER = 'container';
 
 
 /**
- * class name used by the editable jquery plugin
+ * class name which means that the element is a Silex editable element
  * @const
  * @type {string}
  */
 silex.model.Body.EDITABLE_CLASS_NAME = 'editable-style';
+
+
+/**
+ * class name used to signify that the Stage is initialized
+ * @const
+ * @type {string}
+ */
+silex.model.Body.EDITABLE_READY_CLASS_NAME = 'editable-ready';
 
 
 /**
@@ -204,6 +212,7 @@ silex.model.Body.prototype.setEditable = function(rootElement, isEditable, opt_i
   if (isEditable) {
     if (goog.dom.getElementsByClass('ui-resizable-s', rootElement).length === 0) {
       this.initUiHandles(rootElement);
+      goog.dom.classlist.add(rootElement, silex.model.Body.EDITABLE_READY_CLASS_NAME);
     }
   }
   else {

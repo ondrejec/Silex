@@ -148,13 +148,15 @@ silex.utils.BackwardCompat.hasToUpdate = function(initialVersion, targetVersion)
 silex.utils.BackwardCompat.to2_2_4 = function(version, doc, model, cbk) {
   if(silex.utils.BackwardCompat.hasToUpdate(version, [2, 2, 4])) {
     console.warn('Update site version from', version, 'to ', silex.utils.BackwardCompat.LATEST_VERSION);
-    // remove the class editable-plugin-created because it is not used anymore, and it appears in the inline css editor
-    elements = doc.body.querySelectorAll('.editable-plugin-created');
-    goog.array.forEach(elements, function(element) {
-        goog.dom.classlist.remove(element, 'editable-plugin-created');
-    });
+    //cleanup the DOM because these classes used to be accidentally saved in the HTML
+    var elements = doc.querySelectorAll('.editable-plugin-created');
+    goog.array.forEach(elements, (element) => element.classList.remove('editable-plugin-created'));
+    elements = doc.querySelectorAll('.dragging-pending');
+    goog.array.forEach(elements, (element) => element.classList.remove('dragging-pending'));
+    elements = doc.querySelectorAll('.drop-zone-candidate');
+    goog.array.forEach(elements, (element) => element.classList.remove('drop-zone-candidate'));
     // remove inline css from .silex-element-content (2.4)
-    var elements = doc.body.querySelectorAll('.silex-element-content');
+    elements = doc.body.querySelectorAll('.silex-element-content');
     goog.array.forEach(elements, function(element) {
       element.style.width ='';
       element.style.height ='';
@@ -251,7 +253,7 @@ silex.utils.BackwardCompat.to2_2_2 = function(version, doc, model, cbk) {
   // critical bug fix (2.2)
   // text editor sets the body class to "silex-element-content normal" instead of the text editor's class
   if (goog.dom.classlist.contains(doc.body, 'silex-element-content')) {
-    doc.body.className = 'pageable-plugin-created ui-droppable';
+    doc.body.className = 'pageable-plugin-created ui-droppable ' + silex.model.Body.EDITABLE_READY_CLASS_NAME;
   }
   cbk();
 };
