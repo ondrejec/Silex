@@ -119,7 +119,7 @@ silex.view.dialog.SettingsDialog.prototype.bindTextField = function(cssSelector,
     throw new Error('Settings panel error: could not find the element to bind.');
   }
   goog.events.listen(
-      input, goog.ui.Component.EventType.CHANGE,
+      input, goog.events.EventType.INPUT,
       function() {
         cbk(input.value);
       }, false, this);
