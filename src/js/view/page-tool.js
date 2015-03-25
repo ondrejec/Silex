@@ -75,7 +75,7 @@ silex.view.PageTool.prototype.buildUi = function() {
     }
     else {
       // select page
-      var cellIndex = this.getCellIndex(e.target.parentNode);
+      var cellIndex = this.getCellIndex(e.target.parentNode.parentNode);
       if (cellIndex >= 0) {
         this.setSelectedIndex(cellIndex, true);
       }
@@ -96,19 +96,22 @@ silex.view.PageTool.prototype.redraw = function(selectedElements, pageNames, cur
   // prepare the data for the template
   // make an array with name, displayName, linkName and className
   var idx = 0;
+  var currentPageIdx = 0;
   this.pages = pageNames.map(goog.bind(function(pageName) {
     var res = {
       'name': pageName,
       'displayName': this.model.file.getContentDocument().getElementById(pageName).innerHTML,
       'linkName': '#!' + pageName,
-      'idx': idx++
+      'idx': idx
     };
     if (currentPageName === pageName) {
       res.className = 'ui-selected';
+      currentPageIdx = idx;
     }
     else {
       res.className = '';
     }
+    idx++;
     return res;
   }, this));
 
@@ -116,6 +119,30 @@ silex.view.PageTool.prototype.redraw = function(selectedElements, pageNames, cur
   var container = goog.dom.getElementByClass('page-tool-container', this.element);
   var templateHtml = goog.dom.getElementByClass('page-tool-template', this.element).innerHTML;
   container.innerHTML = silex.utils.Dom.renderList(templateHtml, this.pages);
+
+  // thumbnail of the current page
+  var currentPageCanvas = container.querySelector('[data-page-idx="' + currentPageIdx + '"] canvas');
+  console.log(currentPageIdx, currentPageCanvas, window['rasterizeHTML']);
+
+/*
+  var html = this.model.file.getHtml().replace(/http:\/\/static\.silex\.me\/?\.?\//g, '/libs/');
+  window['rasterizeHTML']['drawHTML'](html, currentPageCanvas, {
+    'width': 141,
+    'height': 89
+  }).then(function success(renderResult) {
+    console.log('success');
+  }, function error(e) {
+    console.log('err', e);
+  });
+*/
+  window['rasterizeHTML']['drawDocument'](this.model.file.getContentDocument(), currentPageCanvas, {
+    'width': 141,
+    'height': 89
+  }).then(function success(renderResult) {
+    console.log('success');
+  }, function error(e) {
+    console.log('err', e);
+  });
 };
 
 
