@@ -4,6 +4,7 @@
   position: absolute;
   z-index: 0;
   border: none;
+  transition: opacity 0.1s linear;
 }
 
 .silex-stage {
@@ -13,11 +14,6 @@
   bottom: 0;
   left: @pageToolWidth;
   right: @propertiesToolWidth;
-}
-
-
-.silex-stage iframe{
-  transition: opacity 0.1s linear;
 }
 
 .silex-stage.loading-website iframe{
@@ -31,6 +27,14 @@
   background-position: 50%;
 }
 
-.silex-stage.loading-website-light iframe{
+.mobile-mode {
+  .silex-stage-iframe {
+    max-width: 400px;
+    position: initial;
+  }
+  .silex-stage {
+    text-align: center;
+    background-image: url('../assets/stripe.png');
+    background-color: @silexlightgrey;
+  }
 }
-
