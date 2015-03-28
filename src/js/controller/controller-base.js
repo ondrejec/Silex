@@ -402,6 +402,14 @@ silex.controller.ControllerBase.prototype.toggleAdvanced = function() {
 
 
 /**
+ * toggle mobile mode
+ */
+silex.controller.ControllerBase.prototype.toggleMobileMode = function() {
+  document.body.classList.toggle('mobile-mode');
+};
+
+
+/**
  * save or save-as
  * @param {?string=} opt_url
  * @param {?function()=} opt_cbk
