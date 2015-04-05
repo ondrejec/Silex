@@ -31,6 +31,8 @@ $(function() {
   $('body').on('pageChanged', function (event, pageName) {
     // mark links to the current page as active
     $('[data-silex-href="#!'+pageName+'"]').addClass('page-link-active');
+    // hide nav bar on mobile
+    $('body').removeClass('nav-opened');
   });
   /**
    * init page system
@@ -52,5 +54,10 @@ $(function() {
     else{
       window.open(href, '_blank');
     }
+  });
+  // mobile slide menu
+  $('.silex-nav-bar-button').click(function() {
+    $('body').toggleClass('nav-opened');
+    return false;
   });
 })
