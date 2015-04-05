@@ -112,6 +112,7 @@ silex.utils.Style.styleToString = function(style, opt_tab) {
     if(style[idx]
       && typeof style[idx] === 'string'
       && style[idx] !== ''
+      && idx !== 'css-text'
       && idx.match(/[^0-9]/)) {
       styleStr += opt_tab + goog.string.toSelectorCase(idx) + ': ' + style[idx] + '; ';
     }

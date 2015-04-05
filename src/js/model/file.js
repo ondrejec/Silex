@@ -212,7 +212,7 @@ silex.model.File.prototype.onContentLoaded = function(opt_cbk) {
   silex.utils.BackwardCompat.process(this.contentDocument, this.model, () => {
     // check the integrity and store silex style sheet which holds silex elements styles
     this.model.property.initSilexStyleTag(this.contentDocument);
-    this.model.property.setCurrentSilexStyleSheet(this.model.property.getSilexStyleSheet(this.contentDocument));
+    this.model.property.setStyleSheet(this.model.property.getStyleSheet(this.contentDocument));
     // select the body
     this.model.body.setSelection([this.contentDocument.body]);
     // make editable again

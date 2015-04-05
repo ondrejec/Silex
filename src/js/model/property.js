@@ -19,7 +19,6 @@ goog.require('silex.Config');
 goog.require('silex.service.SilexTasks');
 
 
-
 /**
  * @constructor
  * @param  {silex.types.Model} model  model class which holds the other models
@@ -65,11 +64,19 @@ silex.model.Property.ELEMENT_ID_ATTR_NAME = 'data-silex-id'
 
 
 /**
+ * constant for the value of media query for mobile version
+ * @const
+ * @static
+ */
+silex.model.Property.MOBILE_MEDIA_QUERY = '(max-width: 400px)'
+
+
+/**
  * the current file's silex style sheet which holds silex elements styles
  * this is stored for performance reasons
  * @type {CSSStyleSheet|null}
  */
-silex.model.Property.prototype.silexStyleSheet;
+silex.model.Property.prototype.styleSheet;
 
 
 /**
@@ -154,10 +161,10 @@ silex.model.Property.prototype.initSilexStyleTag = function (doc) {
 /**
  * get/set cache the current website main iframe's Silex style sheet
  * this is an optimization
- * @param {CSSStyleSheet|null} silexStyleSheet the style sheet with Silex elements styles
+ * @param {CSSStyleSheet|null} styleSheet the style sheet with Silex elements styles
  */
-silex.model.Property.prototype.setCurrentSilexStyleSheet = function (silexStyleSheet) {
-  this.silexStyleSheet = silexStyleSheet;
+silex.model.Property.prototype.setStyleSheet = function (styleSheet) {
+  this.styleSheet = styleSheet;
 };
 
 
@@ -165,14 +172,16 @@ silex.model.Property.prototype.setCurrentSilexStyleSheet = function (silexStyleS
  * @param {Document} doc docment of the iframe containing the website
  * @return {CSSStyleSheet|null} the style sheet with Silex elements styles
  */
-silex.model.Property.prototype.getSilexStyleSheet = function (doc) {
+silex.model.Property.prototype.getStyleSheet = function (doc) {
   // check that we are looking at the iframe doc
   if (doc === document) {
-    console.error('getSilexStyleSheet error: doc is the main Silex document');
+    console.error('getStyleSheet error: doc is the main Silex document');
   }
   //retrieve the style sheet with Silex definitions
   for (var idx in doc.styleSheets) {
-    if (doc.styleSheets[idx].ownerNode && doc.styleSheets[idx].ownerNode.classList.contains(silex.model.Property.INLINE_STYLE_TAG_CLASS_NAME)) {
+    if (doc.styleSheets[idx].ownerNode
+      && doc.styleSheets[idx].ownerNode.classList.contains(silex.model.Property.INLINE_STYLE_TAG_CLASS_NAME)
+      && doc.styleSheets[idx].media.length === 0) {
       return doc.styleSheets[idx];
     }
   }
@@ -190,9 +199,24 @@ silex.model.Property.prototype.updateSilexStyleTag = function (doc) {
   var elements = doc.querySelectorAll('body, .' + silex.model.Body.EDITABLE_CLASS_NAME);
   var allStyles = '';
   goog.array.forEach(elements, function(element) {
-    var style = this.getStyleObject(element);
-    var styleStr = silex.utils.Style.styleToString(style, '\n    ');
-    allStyles += '.' + this.getSilexId(element) + ' {' + styleStr + '\n}\n';
+    var elementId =  /** @type {string} */ (this.getSilexId(element));
+    var cssRuleIdx = -1;
+    // desktop
+    let cssRuleObject = this.findCssRuleIndex(elementId, false);
+    if(cssRuleObject) {
+      let cssRule = cssRuleObject.rule;
+      let styleStr = silex.utils.Style.styleToString(cssRule.style, '\n    ');
+      allStyles += '.' + this.getSilexId(element) + ' {' + styleStr + '\n}\n';
+    }
+    // mobile
+    cssRuleObject = this.findCssRuleIndex(elementId, true);
+    if(cssRuleObject) {
+      let cssRule = cssRuleObject.rule;
+      let styleStr = silex.utils.Style.styleToString(cssRule.style, '\n        ');
+      styleStr = '    .' + this.getSilexId(element) + ' {' + styleStr + '\n    }\n';
+      styleStr = '@media ' + silex.model.Property.MOBILE_MEDIA_QUERY + '{' + styleStr + '}';
+      allStyles += styleStr;
+    }
   }, this);
   var styleTag = doc.querySelector('.' + silex.model.Property.INLINE_STYLE_TAG_CLASS_NAME);
   styleTag.innerHTML = allStyles;
@@ -208,25 +232,69 @@ silex.model.Property.prototype.updateSilexStyleTag = function (doc) {
  * @param {?string|Object|CSSStyleDeclaration=} style
  */
 silex.model.Property.prototype.setStyle = function (element, style) {
-  // convert style to string
-  var styleStr = silex.utils.Style.styleToString(style || '');
-  // we use the class name because elements have their ID as a css class too
-  styleStr = '.' + this.getSilexId(element) + '{' + styleStr + '} ';
   // find the index of the rule for the given element
-  var originalCssRuleIdx = -1;
-  for (var idx in this.silexStyleSheet.cssRules) {
-    if (this.silexStyleSheet.cssRules[idx].selectorText === '.' + this.getSilexId(element)) {
-      originalCssRuleIdx = parseInt(idx, 10);
-      break;
+  var elementId =  /** @type {string} */ (this.getSilexId(element));
+  var cssRuleObject = this.findCssRuleIndex(elementId, this.view.workspace.getMobileEditor());
+  // update or create the rule
+  if (cssRuleObject) {
+    cssRuleObject.parent.deleteRule(cssRuleObject.index);
+  }
+
+  if(style) {
+    // convert style to string
+    var styleStr = silex.utils.Style.styleToString(style);
+    // we use the class name because elements have their ID as a css class too
+    styleStr = '.' + this.getSilexId(element) + '{' + styleStr + '} ';
+    if(this.view.workspace.getMobileEditor()) {
+      styleStr = '@media ' + silex.model.Property.MOBILE_MEDIA_QUERY + '{' + styleStr + '}';
+    }
+    // insert the new rule
+    var idx = this.styleSheet.insertRule(styleStr, this.styleSheet.cssRules.length);
+  }
+  // else do not add the new rule, which means that the rule is deleted
+};
+
+
+/**
+ *
+ * @typedef {{rule: CSSRule, parent: (CSSRule|CSSStyleSheet), index: number}}
+ */
+silex.model.Property.CSSRuleInfo;
+
+
+/**
+ * Utility method used to find the CSS declaration corresponding to a given element's ID
+ * It takes into account if we are in mobile editor mode or not
+ * Use `this.styleSheet.cssRules[this.findCssRuleIndex(...)]` to retrieve the actual css rule
+ * @param {string} elementId
+ * @param {boolean} isMobile
+ * @return {silex.model.Property.CSSRuleInfo|null} null if not found
+ */
+silex.model.Property.prototype.findCssRuleIndex = function (elementId, isMobile) {
+  // find the rule for the given element
+  for (var idx in this.styleSheet.cssRules) {
+    // we use the class name because elements have their ID as a css class too
+    if(isMobile === false) {
+      if(this.styleSheet.cssRules[idx].selectorText === '.' + elementId) {
+        return {
+          rule: this.styleSheet.cssRules[idx],
+          parent: this.styleSheet,
+          index: parseInt(idx, 10)
+        }
+      }
+    }
+    else if(this.styleSheet.cssRules[idx].media
+      && this.styleSheet.cssRules[idx].cssRules
+      && this.styleSheet.cssRules[idx].cssRules[0]
+      && this.styleSheet.cssRules[idx].cssRules[0].selectorText === '.' + elementId) {
+      return {
+        rule: this.styleSheet.cssRules[idx].cssRules[0],
+        parent: this.styleSheet.cssRules[idx],
+        index: 0
+      }
     }
   }
-  // update or create the rule
-  if (originalCssRuleIdx >= 0) {
-    this.silexStyleSheet.deleteRule(originalCssRuleIdx)
-  }
-  if(style) {
-    this.silexStyleSheet.insertRule(styleStr, this.silexStyleSheet.cssRules.length);
-  }
+  return null;
 };
 
 
@@ -237,19 +305,28 @@ silex.model.Property.prototype.setStyle = function (element, style) {
  * @return {Object|null}
  */
 silex.model.Property.prototype.getStyleObject = function (element) {
-  // find the rule for the given element
-  for (var idx in this.silexStyleSheet.cssRules) {
-    // we use the class name because elements have their ID as a css class too
-    if (this.silexStyleSheet.cssRules[idx].selectorText === '.' + this.getSilexId(element)) {
-      // build an object with only the changed keys
-      var cssStyleDeclaration = this.silexStyleSheet.cssRules[idx].style;
-      var res = {};
-      for (var idx=0 ; idx < cssStyleDeclaration.length; idx++) {
-        var styleName = cssStyleDeclaration[idx];
-        res[styleName] = cssStyleDeclaration[styleName];
-      }
-      return res;
+  var elementId =  /** @type {string} */ (this.getSilexId(element));
+  var cssRule = null;
+  if(this.view.workspace.getMobileEditor()) {
+    let cssRuleObject = this.findCssRuleIndex(elementId, true);
+    if(cssRuleObject) {
+      cssRule = cssRuleObject.rule;
     }
+  }
+  if(!cssRule) {
+    let cssRuleObject = this.findCssRuleIndex(elementId, false);
+    if(cssRuleObject) {
+      cssRule = cssRuleObject.rule;
+    }
+  }
+  // build an object out of the css style sheet
+  if(cssRule) {
+    var res = {};
+    for (var idx=0 ; idx < cssRule.style.length; idx++) {
+      var styleName = cssRule.style[idx];
+      res[styleName] = cssRule.style[styleName];
+    }
+    return res;
   }
   return null;
 };
