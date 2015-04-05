@@ -198,7 +198,7 @@ silex.model.File.prototype.onContentLoaded = function(opt_cbk) {
     // update text editor with the website custom styles and script
     this.model.head.setHeadStyle(this.model.head.getHeadStyle());
     this.model.head.setHeadScript(this.model.head.getHeadScript());
-    // update the settings
+    // update the settings dialog
     this.model.head.updateFromDom();
     // restore event listeners
     this.view.stage.initEvents(this.contentWindow_);

@@ -84,16 +84,23 @@ silex.model.Head.HEAD_TAG_STOP = '<!-- End of Silex HEAD tag do not remove -->';
 
 
 /**
+ * css class set to enable mobile version
+ */
+silex.model.Head.ENABLE_MOBILE_CSS_CLASS = 'enable-mobile';
+
+
+/**
  * Update the settings from the DOM after a website was loaded
  */
 silex.model.Head.prototype.updateFromDom = function() {
-  this.view.settingsDialog.setPublicationPath(this.model.head.getPublicationPath());
-  this.view.settingsDialog.setFaviconPath(this.model.head.getFaviconPath());
-  this.view.settingsDialog.setThumbnailSocialPath(this.model.head.getThumbnailSocialPath());
-  this.view.settingsDialog.setDescription(this.model.head.getDescription());
-  this.view.settingsDialog.setDescriptionSocial(this.model.head.getDescriptionSocial());
-  this.view.settingsDialog.setTitleSocial(this.model.head.getTitleSocial());
-  this.view.settingsDialog.setTitle(this.model.head.getTitle());
+  this.setPublicationPath(getPublicationPath());
+  this.setFaviconPath(getFaviconPath());
+  this.setThumbnailSocialPath(getThumbnailSocialPath());
+  this.setDescription(getDescription());
+  this.setDescriptionSocial(getDescriptionSocial());
+  this.setTitleSocial(getTitleSocial());
+  this.setTitle(getTitle());
+  this.setEnableMobile(getEnableMobile());
 };
 
 
@@ -359,12 +366,35 @@ silex.model.Head.prototype.setPublicationPath = function(opt_path) {
 /**
  * get/set the publication path
  * publication path is always absolute url
- * @return {?string}
+ * @return {string|null}
  */
 silex.model.Head.prototype.getPublicationPath = function() {
   // here, we could make it a relative path in order to display it, but publication path is deliberately an absolute path
   var url = this.getMeta('publicationPath');
   return url;
+};
+
+
+/**
+ * enable/disable the mobile version
+ * @param {boolean} enable
+ */
+silex.model.Head.prototype.setEnableMobile = function(enable) {
+  if(enable === true) {
+    this.model.file.getContentDocument().body.classList.add(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
+  } else {
+    this.model.file.getContentDocument().body.classList.remove(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
+  }
+  this.view.settingsDialog.setEnableMobile(enable);
+};
+
+
+/**
+ * enable/disable the mobile version
+ * @return {boolean}
+ */
+silex.model.Head.prototype.getEnableMobile = function() {
+  return this.model.file.getContentDocument().body.classList.contains(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
 };
 
 

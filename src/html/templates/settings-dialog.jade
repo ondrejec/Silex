@@ -6,7 +6,7 @@
   .body
     .left-pane
       ul.tree
-        li.general-pane General
+        li.general-pane SEO
         li.social-pane Social Networks
         li.publish-pane Publish settings
     .right-pane
@@ -84,9 +84,18 @@
           li
             fieldset
               legend
-                h3.title Publication Path
-                a.help-icon(href="https://github.com/silexlabs/Silex/issues/238", title="about Silex and CSS", target="blank") Help
+                h3.title Publication Path -
+                a.help-icon(href="https://github.com/silexlabs/Silex/issues/238", title="about Silex publication process", target="blank") Help
               p
                 | Path to the folder in wich I will publish the website. This folder content will be deleted.
               input.input-url.input-publication-path(type="text", value="")
               button.browse-publication-path(type="button") Browse
+          li
+            fieldset
+              legend
+                h3.title Enable mobile version
+              p
+                | Show a different version of your website when the size of the screen is too small for the desktop version.
+                | Switch to mobile editor in the menu "view" / "Mobile Editor" to edit this other version of your website.
+              span.mobile-check
+
