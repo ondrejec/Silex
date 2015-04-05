@@ -84,6 +84,12 @@ silex.model.Head.HEAD_TAG_STOP = '<!-- End of Silex HEAD tag do not remove -->';
 
 
 /**
+ * css class set to enable mobile version
+ */
+silex.model.Head.ENABLE_MOBILE_CSS_CLASS = 'enable-mobile';
+
+
+/**
  * set/get HEAD tag
  * the head tag edited by the user is a portion of the real head tag
  * it is delimited by specific comments
@@ -337,9 +343,33 @@ silex.model.Head.prototype.setPublicationPath = function(opt_path) {
 
 /**
  * get/set the publication path
+ * @return {string|null}
  */
 silex.model.Head.prototype.getPublicationPath = function() {
   return this.getMeta('publicationPath');
+};
+
+
+/**
+ * enable/disable the mobile version
+ * @param {boolean} enable
+ */
+silex.model.Head.prototype.setEnableMobile = function(enable) {
+  if(enable === true) {
+    this.model.file.getContentDocument().body.classList.add(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
+  } else {
+    this.model.file.getContentDocument().body.classList.remove(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
+  }
+  this.view.settingsDialog.setEnableMobile(enable);
+}
+
+
+/**
+ * enable/disable the mobile version
+ * @return {boolean}
+ */
+silex.model.Head.prototype.getEnableMobile = function() {
+  return this.model.file.getContentDocument().body.classList.contains(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
 };
 
 

@@ -222,6 +222,7 @@ silex.model.File.prototype.onContentLoaded = function(opt_cbk) {
     this.model.head.setHeadScript(this.model.head.getHeadScript());
     // update the settings dialog
     this.model.head.setPublicationPath(this.model.head.getPublicationPath());
+    this.model.head.setEnableMobile(this.model.head.getEnableMobile());
     this.model.head.setFaviconPath(this.model.head.getFaviconPath());
     this.model.head.setTitle(this.model.head.getTitle());
     this.model.head.setDescription(this.model.head.getDescription());
