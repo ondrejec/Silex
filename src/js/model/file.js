@@ -1,4 +1,3 @@
-
 /**
  * Silex, live web creation
  * http://projects.silexlabs.org/?/silex/
@@ -189,8 +188,8 @@ silex.model.File.prototype.onContentLoaded = function(opt_cbk) {
   // handle retrocompatibility issues
   silex.utils.BackwardCompat.process(this.contentDocument_, this.model, () => {
     // check the integrity and store silex style sheet which holds silex elements styles
-    this.model.property.initSilexStyleTag(this.contentDocument_);
-    this.model.property.setCurrentSilexStyleSheet(this.model.property.getSilexStyleSheet(this.contentDocument_));
+    this.model.property.initSilexStyleTag(this.contentDocument);
+    this.model.property.setStyleSheet(this.model.property.getStyleSheet(this.contentDocument));
     // select the body
     this.model.body.setSelection([this.contentDocument_.body]);
     // make editable again
