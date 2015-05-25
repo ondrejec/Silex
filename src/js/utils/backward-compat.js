@@ -33,7 +33,7 @@ silex.utils.BackwardCompat = function() {
  * used for backward compat
  * also the static files are taken from //static.silex.me/Y-Z
  */
-silex.utils.BackwardCompat.LATEST_VERSION = [2, 2, 4];
+silex.utils.BackwardCompat.LATEST_VERSION = [2, 2, 5];
 
 
 /**
@@ -92,8 +92,9 @@ silex.utils.BackwardCompat.process = function(doc, model, cbk) {
   silex.utils.BackwardCompat.to2_2_2(version, doc, model, function() {
   silex.utils.BackwardCompat.to2_2_3(version, doc, model, function() {
   silex.utils.BackwardCompat.to2_2_4(version, doc, model, function() {
-    // next update here (to2_2_5)
+  silex.utils.BackwardCompat.to2_2_5(version, doc, model, function() {
     cbk();
+  });
   });
   });
   });
@@ -138,6 +139,19 @@ silex.utils.BackwardCompat.hasToUpdate = function(initialVersion, targetVersion)
     || initialVersion[2] < targetVersion[2];
 }
 
+
+/**
+ * @param {Array.<number>} version
+ * @param {Document} doc
+ * @param  {silex.types.Model} model
+ * @param {function()} cbk
+ */
+silex.utils.BackwardCompat.to2_2_5 = function(version, doc, model, cbk) {
+  if(silex.utils.BackwardCompat.hasToUpdate(version, [2, 2, 5])) {
+    console.warn('Update site version from', version, 'to ', silex.utils.BackwardCompat.LATEST_VERSION);
+  }
+  cbk();
+}
 
 /**
  * @param {Array.<number>} version
@@ -344,5 +358,3 @@ silex.utils.BackwardCompat.to2_2_0 = function(version, doc, model, cbk) {
   }
   cbk();
 };
-
-
