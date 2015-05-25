@@ -149,6 +149,14 @@ silex.utils.BackwardCompat.hasToUpdate = function(initialVersion, targetVersion)
 silex.utils.BackwardCompat.to2_2_5 = function(version, doc, model, cbk) {
   if(silex.utils.BackwardCompat.hasToUpdate(version, [2, 2, 5])) {
     console.warn('Update site version from', version, 'to ', silex.utils.BackwardCompat.LATEST_VERSION);
+    var pagesContainer = doc.querySelector(silex.model.Page.PAGES_CONTAINER_CLASS_NAME);
+    if(!pagesContainer) {
+      pagesContainer = doc.createElement('div');
+      pagesContainer.classList.add(silex.model.Page.PAGES_CONTAINER_CLASS_NAME);
+      doc.body.appendChild(pagesContainer);
+      var pages = doc.querySelectorAll(silex.model.Page.PAGE_CLASS_NAME);
+      goog.array.forEach(pages, (page) => pagesContainer.appendChild(page));
+    }
   }
   cbk();
 }

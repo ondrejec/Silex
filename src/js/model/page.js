@@ -81,6 +81,14 @@ silex.model.Page.PAGE_CLASS_NAME = 'page-element';
 
 
 /**
+ * constant for the class name of the div which contains the pages
+ * @const
+ * @type {string}
+ */
+silex.model.Page.PAGES_CONTAINER_CLASS_NAME = 'silex-pages';
+
+
+/**
  * constant for the class name of elements visible only on some pages
  * @const
  * @type {string}
@@ -276,7 +284,8 @@ silex.model.Page.prototype.createPage = function(name, displayName) {
   aTag.setAttribute('id', name);
   aTag.setAttribute('data-silex-type', 'page');
   aTag.innerHTML = displayName;
-  goog.dom.appendChild(bodyElement, aTag);
+  var pagesElement = /** @type {Element} */ (goog.dom.getElementsByClass(silex.model.Page.PAGES_CONTAINER_CLASS_NAME, bodyElement)[0]);
+  goog.dom.appendChild(pagesElement, aTag);
   // for coherence with other silex elements
   goog.dom.classlist.add(aTag, silex.model.Page.PAGE_CLASS_NAME);
   // select this page
