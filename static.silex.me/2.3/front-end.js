@@ -31,8 +31,6 @@ $(function() {
   $('body').on('pageChanged', function (event, pageName) {
     // mark links to the current page as active
     $('[data-silex-href="#!'+pageName+'"]').addClass('page-link-active');
-    // hide nav bar on mobile
-    $('body').removeClass('nav-opened');
   });
   /**
    * init page system
@@ -55,9 +53,19 @@ $(function() {
       window.open(href, '_blank');
     }
   });
-  // mobile slide menu
-  $('.silex-nav-bar-button').click(function() {
-    $('body').toggleClass('nav-opened');
-    return false;
-  });
+  /**
+   * mobile menu
+   */
+   $('.silex-pages').each(function() {
+     var button = document.createElement('div');
+     button.className = 'menu-button';
+     this.appendChild(button);
+     $(button).click(function () {
+       $(document.body).toggleClass('show-mobile-menu');
+     });
+   });
+   $('.silex-pages .page-element').click(function() {
+     $(document.body).pageable({'currentPage': '#!page-' + this.id});
+     $(document.body).removeClass('show-mobile-menu');
+   });
 })

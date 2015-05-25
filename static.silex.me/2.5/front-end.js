@@ -53,4 +53,19 @@ $(function() {
       window.open(href, '_blank');
     }
   });
+  /**
+   * mobile menu
+   */
+   $('.silex-pages').each(function() {
+     var button = document.createElement('div');
+     button.className = 'menu-button';
+     this.appendChild(button);
+     $(button).click(function () {
+       $(document.body).toggleClass('show-mobile-menu');
+     });
+   });
+   $('.silex-pages .page-element').click(function() {
+     $(document.body).pageable({'currentPage': '#!page-' + this.id});
+     $(document.body).removeClass('show-mobile-menu');
+   });
 })

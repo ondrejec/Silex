@@ -65,6 +65,15 @@ a:focus{ outline: none;}
   transition: left .25s ease-out;
 }
 @media (max-width:400px) {
+  .silex-pages {
+    position: absolute;
+    z-index: 999999;
+    width: 80%;
+    background-color: red;
+  }
+  .page-element {
+    display: block;
+  }
   .nav-opened .nav-bar {
     left: 0;
   }
