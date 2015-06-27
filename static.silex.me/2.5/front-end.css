@@ -59,13 +59,15 @@ a:focus{ outline: none;}
   width: 75%;
   height: auto;
   left: -75%;
-  transition: left .25s ease-out;
+  transition: left .1s ease-out;
 }
 .silex-pages .menu-button {
   width: 50px;
   height: 50px;
   left: 110%;
-  background-color: green;
+  background-image: url('/assets/hamburger.png');
+  background-repeat: no-repeat;
+  background-size: cover;
   position: absolute;
   cursor: pointer;
 }
