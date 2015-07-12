@@ -135,6 +135,7 @@ Communication inside silex
 * verifier que `npm install --production` fonctionne (doit builder sans les devDependencies)
   https://github.com/silexlabs/Silex/issues/287
 * avoir 2 modes de build, dev / prod, plus de .min.* ni de debug.html
+* get rid of the content in dist
 * deploy with codeship or travis
   sftp xxxx@sftp.dc0.gpaas.net
   + pass ?

@@ -17,6 +17,8 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var multipart = require('connect-multiparty');
 var FSStore = require('connect-fs2')(session);
+var tls = require('tls');
+var fs = require('fs');
 
 // init express
 var app = express();
@@ -37,7 +39,6 @@ app.use('/', bodyParser.json({limit: '10mb'}));
 app.use('/', cookieParser());
 
 // get silex config
-var fs = require('fs');
 var silexConfig = unifile.defaultConfig;
 if (fs.existsSync(__dirname + '/config.js')) {
   var obj = require(__dirname + '/config.js');
@@ -134,6 +135,20 @@ exports.setDebugMode(debug);
 // ********************************
 // unifile server
 // ********************************
+// SSL certificate
+try {
+  var privateKey = fs.readFileSync(process.env.SILEX_SSL_PRIVATE_KEY || __dirname + '/../../privatekey.pem').toString();
+  var certificate = fs.readFileSync(process.env.SILEX_SSL_CERTIFICATE || __dirname + '/../../certificate.pem').toString();
+
+  var options = {
+    key: privatekey,
+    cert: certificate
+  };
+}
+catch(e) {
+  console.warn('SSL certificate failed.')
+}
+
 // use unifile as a middleware
 app.use('/api', unifile.middleware(express, app, silexConfig));
 
