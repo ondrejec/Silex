@@ -17,7 +17,8 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var multipart = require('connect-multiparty');
 var FSStore = require('connect-fs2')(session);
-var tls = require('tls');
+var http = require('http');
+var https = require('https');
 var fs = require('fs');
 
 // init express
@@ -132,31 +133,42 @@ for (var i in process.argv){
 // debug or production mode
 exports.setDebugMode(debug);
 
-// ********************************
-// unifile server
-// ********************************
-// SSL certificate
-try {
-  var privateKey = fs.readFileSync(process.env.SILEX_SSL_PRIVATE_KEY || __dirname + '/../../privatekey.pem').toString();
-  var certificate = fs.readFileSync(process.env.SILEX_SSL_CERTIFICATE || __dirname + '/../../certificate.pem').toString();
-
-  var options = {
-    key: privatekey,
-    cert: certificate
-  };
-}
-catch(e) {
-  console.warn('SSL certificate failed.')
-}
-
 // use unifile as a middleware
 app.use('/api', unifile.middleware(express, app, silexConfig));
 
-// server 'loop'
+// ********************************
+// unifile server
+// ********************************
 var port = process.env.PORT || 6805; // 6805 is the date of sexual revolution started in paris france 8-)
-app.listen(port, function() {
-  console.log('Listening on ' + port);
+http.createServer(app).listen(port, function() {
+  console.log('listening on port ', port);
 });
+
+// SSL certificate
+if(process.env.SILEX_SSL_PRIVATE_KEY && process.env.SILEX_SSL_CERTIFICATE) {
+  try {
+    var privateKey = fs.readFileSync(process.env.SILEX_SSL_PRIVATE_KEY).toString();
+    var certificate = fs.readFileSync(process.env.SILEX_SSL_CERTIFICATE).toString();
+
+    var options = {
+      key: privateKey,
+      cert: certificate,
+      requestCert: true,
+      rejectUnauthorized: false
+    };
+
+    https.createServer(options, app).listen(443, function() {
+      console.log('listening on port ', 443);
+    });
+    app.use(function(req, res, next){
+      console.log('app.use');
+      next();
+    });
+  }
+  catch(e) {
+    console.warn('SSL certificate failed.', e)
+  }
+}
 
 // ********************************
 // silex tasks
