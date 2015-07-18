@@ -157,8 +157,9 @@ if(process.env.SILEX_SSL_PRIVATE_KEY && process.env.SILEX_SSL_CERTIFICATE) {
       rejectUnauthorized: false
     };
 
-    https.createServer(options, app).listen(443, function() {
-      console.log('listening on port ', 443);
+    var sslPort = process.env.SSL_PORT || 443;
+    https.createServer(options, app).listen(sslPort, function() {
+      console.log('listening on port ', sslPort);
     });
     app.use(function(req, res, next){
       console.log('app.use');

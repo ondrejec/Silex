@@ -121,6 +121,13 @@ Start Silex :
 * Launch Silex from a command prompt ( Silex's Directory) : node dist/server/server.js
 * Open your favorite browser on http://localhost:6805/ and ENJOY !!!
 
+### environment variables
+
+* `PORT`
+* `SSL_PORT`
+* `SILEX_SSL_PRIVATE_KEY`
+* `SILEX_SSL_CERTIFICATE`
+
 ### enable https / SSL
 
 When you start Silex, it looks for the environment variables `SILEX_SSL_PRIVATE_KEY` and `SILEX_SSL_CERTIFICATE`. If they are present, it enables SSL.
