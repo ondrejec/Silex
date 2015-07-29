@@ -27,7 +27,7 @@ body{
 }
 /* background */
 .background{
-  position: relative !important;
+  position: relative;
   left: 0 !important;
   top: 0 !important; /* !important is useful while editing */
   margin-left: auto;
@@ -68,6 +68,7 @@ a:focus{ outline: none;}
   width: 50px;
   height: 50px;
   left: 110%;
+  top: 30px;
   background-image: url('./assets/hamburger.png');
   background-repeat: no-repeat;
   background-size: cover;
@@ -80,7 +81,7 @@ a:focus{ outline: none;}
     z-index: 999999;
     width: 80%;
     height: 100%;
-    background-color: red;
+    background-color: #535353;
     right: 100%;
     transition: right 1s;
   }
@@ -90,6 +91,10 @@ a:focus{ outline: none;}
   .page-element {
     display: block;
     cursor: pointer;
+    margin: 20px;
+    color: white;
+    border-bottom: 1px solid;
+    padding: 10px 0;
   }
   .nav-opened .nav-bar {
     left: 0;
@@ -97,15 +102,15 @@ a:focus{ outline: none;}
   body.enable-mobile .editable-style,
   body.enable-mobile .background.background-initial,
   body.enable-mobile {
-    xposition: static !important;
-      position: relative !important;
-      top: auto !important;
-      left: auto !important;
-    display: inline-block !important;
-    max-width: 98% !important;
-    xheight: auto !important;
-    min-width: initial !important;
-    min-height: initial !important;
+    xposition: static;
+      position: relative;
+      top: auto;
+      left: auto;
+    display: inline-block;
+    max-width: 98%;
+    xheight: auto;
+    min-width: initial;
+    min-height: initial;
   }
   /* nav bar */
   body.enable-mobile .nav-bar {
