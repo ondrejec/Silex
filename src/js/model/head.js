@@ -93,14 +93,14 @@ silex.model.Head.ENABLE_MOBILE_CSS_CLASS = 'enable-mobile';
  * Update the settings from the DOM after a website was loaded
  */
 silex.model.Head.prototype.updateFromDom = function() {
-  this.setPublicationPath(getPublicationPath());
-  this.setFaviconPath(getFaviconPath());
-  this.setThumbnailSocialPath(getThumbnailSocialPath());
-  this.setDescription(getDescription());
-  this.setDescriptionSocial(getDescriptionSocial());
-  this.setTitleSocial(getTitleSocial());
-  this.setTitle(getTitle());
-  this.setEnableMobile(getEnableMobile());
+  this.setPublicationPath(this.getPublicationPath());
+  this.setFaviconPath(this.getFaviconPath());
+  this.setThumbnailSocialPath(this.getThumbnailSocialPath());
+  this.setDescription(this.getDescription());
+  this.setDescriptionSocial(this.getDescriptionSocial());
+  this.setTitleSocial(this.getTitleSocial());
+  this.setTitle(this.getTitle());
+  this.setEnableMobile(this.getEnableMobile());
 };
 
 

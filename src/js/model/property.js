@@ -164,7 +164,6 @@ silex.model.Property.prototype.initSilexStyleTag = function(doc) {
 /**
  * get/set cache the current website main iframe's Silex style sheet
  * this is an optimization
-<<<<<<< HEAD
  * @param {?CSSStyleSheet} styleSheet the style sheet with Silex elements styles
  */
 silex.model.Property.prototype.setStyleSheet = function(styleSheet) {
