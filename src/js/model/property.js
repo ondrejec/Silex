@@ -69,6 +69,14 @@ silex.model.Property.MOBILE_MEDIA_QUERY = '(max-width: 400px)'
 
 
 /**
+ * constant for the value of media query for mobile version
+ * @const
+ * @static
+ */
+silex.model.Property.MOBILE_MEDIA_QUERY = '(max-width: 400px)'
+
+
+/**
  * the current file's silex style sheet which holds silex elements styles
  * this is stored for performance reasons
  * @type {?CSSStyleSheet}
@@ -164,9 +172,9 @@ silex.model.Property.prototype.initSilexStyleTag = function(doc) {
 /**
  * get/set cache the current website main iframe's Silex style sheet
  * this is an optimization
- * @param {?CSSStyleSheet} styleSheet the style sheet with Silex elements styles
+ * @param {CSSStyleSheet|null} styleSheet the style sheet with Silex elements styles
  */
-silex.model.Property.prototype.setStyleSheet = function(styleSheet) {
+silex.model.Property.prototype.setStyleSheet = function (styleSheet) {
   this.styleSheet = styleSheet;
 };
 
@@ -252,7 +260,7 @@ silex.model.Property.prototype.updateSilexStyleTag = function(doc) {
  * @param {Element} element
  * @param {?string|Object|CSSStyleDeclaration=} style
  */
-silex.model.Property.prototype.setStyle = function(element, style) {
+silex.model.Property.prototype.setStyle = function (element, style) {
   // find the index of the rule for the given element
   var elementId =  /** @type {string} */ (this.getSilexId(element));
   var cssRuleObject = this.findCssRuleIndex(elementId, this.view.workspace.getMobileEditor());

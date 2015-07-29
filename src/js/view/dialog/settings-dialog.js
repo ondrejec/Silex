@@ -216,6 +216,16 @@ silex.view.dialog.SettingsDialog.prototype.setEnableMobile = function(enabled) {
 
 
 /**
+ * enable/disable mobile version
+ * @see silex.model.Head
+ * @param {boolean} enabled
+ */
+silex.view.dialog.SettingsDialog.prototype.setEnableMobile = function(enabled) {
+  this.mobileCheckbox.setChecked(enabled);
+}
+
+
+/**
  * set the site title to display
  * @see silex.model.Head
  * @param {?string=} opt_title   the site title

@@ -128,10 +128,11 @@ silex.utils.Style.styleToString = function(style, opt_tab) {
   for (var idx in style) {
     // filter the numerical indexes of a CSSStyleDeclaration object
     // filter initial values and shorthand properties
-    if (style[idx] &&
-      typeof style[idx] === 'string' &&
-      style[idx] !== '' &&
-      idx.match(/[^0-9]/)) {
+    if(style[idx]
+      && typeof style[idx] === 'string'
+      && style[idx] !== ''
+      && idx !== 'css-text'
+      && idx.match(/[^0-9]/)) {
       styleStr += opt_tab + goog.string.toSelectorCase(idx) + ': ' + style[idx] + '; ';
     }
   }

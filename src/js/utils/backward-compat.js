@@ -391,4 +391,5 @@ silex.utils.BackwardCompat.to2_2_0 = function(version, doc, model, cbk) {
   }
   cbk();
 };
+<<<<<<< HEAD
 */

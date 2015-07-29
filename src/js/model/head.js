@@ -399,6 +399,29 @@ silex.model.Head.prototype.getEnableMobile = function() {
 
 
 /**
+ * enable/disable the mobile version
+ * @param {boolean} enable
+ */
+silex.model.Head.prototype.setEnableMobile = function(enable) {
+  if(enable === true) {
+    this.model.file.getContentDocument().body.classList.add(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
+  } else {
+    this.model.file.getContentDocument().body.classList.remove(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
+  }
+  this.view.settingsDialog.setEnableMobile(enable);
+}
+
+
+/**
+ * enable/disable the mobile version
+ * @return {boolean}
+ */
+silex.model.Head.prototype.getEnableMobile = function() {
+  return this.model.file.getContentDocument().body.classList.contains(silex.model.Head.ENABLE_MOBILE_CSS_CLASS);
+};
+
+
+/**
  * get/set the description
  * @param {?string=} opt_description
  */
